@@ -9,6 +9,20 @@ This library provides enhanced transactional management for Quarkus applications
 - Thread-safe transaction level management
 - Extensible processor system for custom transaction handling
 
+## Interaction with @Transactional
+
+This library is designed to work alongside the standard `@Transactional` annotation from Jakarta EE. However, it's important to note the following:
+
+1. When both `@Transactional` and one of this library's annotations (`@TransactionalReadOnly` or `@TransactionalWrite`) are present, the behavior is determined by the interceptor ordering.
+
+2. It's recommended to use either this library's annotations or `@Transactional`, but not both on the same method to avoid confusion.
+
+3. If you need to use both, be aware that:
+  - This library's annotations provide more fine-grained control over read/write behavior.
+  - `@Transactional` provides more options for configuring transaction attributes like isolation level and timeout.
+
+4. In a mixed environment, ensure that your transaction management strategy is consistent and well-documented to prevent unexpected behavior.
+
 ## Installation
 
 Add the following dependency to your project:
@@ -64,6 +78,53 @@ TransactionWrite.withRequiringNew {
     // Write operation in a new transaction
 }
 ```
+
+## Recommended Usage
+
+To ensure proper transaction usage and prevent write transactions from being nested within read transactions, it is strongly recommended to use this library in conjunction with the Detekt static code analysis tool and the Usage Detection Plugin.
+
+### Using with Detekt and Usage Detection Plugin
+
+1. Add Detekt and the Usage Detection Plugin to your project. In your `build.gradle.kts` file:
+
+```kotlin
+plugins {
+    id("io.gitlab.arturbosch.detekt") version "<detekt_version>"
+}
+
+dependencies {
+    detektPlugins("ru.code4a:usage-detection-detekt-plugin:<plugin_version>")
+}
+```
+
+2. Configure the rules in your Detekt configuration file (e.g., `detekt.yml`):
+
+```yaml
+foura_usage_detection:
+  ValidateAllowDeepInvokesDetektRule:
+    active: true
+    configYaml: |
+      rootRules:
+        - message: "Write transaction detected inside a read-only transaction"
+          visitFilter:
+            rootsAndNested:
+              is:
+                methodsWithAnnotations:
+                  - ru.code4a.quarkus.transactional.rw.annotations.TransactionalReadOnly
+          notAllowedInvokes:
+            methodsWithAnnotations:
+              - ru.code4a.quarkus.transactional.rw.annotations.TransactionalWrite
+```
+
+3. Run Detekt as part of your build process or manually:
+
+```shell
+./gradlew detekt
+```
+
+By integrating Detekt with the Usage Detection Plugin, you can automatically detect and prevent cases where write transactions are incorrectly nested within read-only transactions. This helps maintain the integrity of your transactional boundaries and ensures proper usage of the Quarkus Transactional Read-Write library.
+
+Remember to adjust the configuration according to your specific package names and requirements. This setup will help catch potential misuses of transactions at compile-time, reducing the risk of runtime errors and improving overall code quality.
 
 ## Transaction Level Management
 
