@@ -26,29 +26,14 @@ class TransactionalRWProcessorManager(
 
   @PostConstruct
   protected fun onPostConstruct() {
-    var currentBlock: (() -> Any?) -> Any? = { block -> block() }
-    for (processor in newReadTransactionalRWProcessors) {
-      currentBlock = { block ->
-        processor.with(block)
-      }
-    }
-    newReadTransactionalRWProcessorsCallback = currentBlock
+    newReadTransactionalRWProcessorsCallback =
+      createCallbackFromProcessors(newReadTransactionalRWProcessors)
 
-    currentBlock = { block -> block() }
-    for (processor in existsWriteTransactionalRWProcessors) {
-      currentBlock = { block ->
-        processor.with(block)
-      }
-    }
-    existsWriteTransactionalRWProcessorsCallback = currentBlock
+    existsWriteTransactionalRWProcessorsCallback =
+      createCallbackFromProcessors(existsWriteTransactionalRWProcessors)
 
-    currentBlock = { block -> block() }
-    for (processor in newWriteTransactionalRWProcessors) {
-      currentBlock = { block ->
-        processor.with(block)
-      }
-    }
-    newWriteTransactionalRWProcessorsCallback = currentBlock
+    newWriteTransactionalRWProcessorsCallback =
+      createCallbackFromProcessors(newWriteTransactionalRWProcessors)
   }
 
   companion object {
@@ -70,4 +55,16 @@ class TransactionalRWProcessorManager(
       return instance.existsWriteTransactionalRWProcessorsCallback(block) as T
     }
   }
+}
+
+internal fun createCallbackFromProcessors(processors: List<TransactionalRWProcessor>): (() -> Any?) -> Any? {
+  var currentBlock: (() -> Any?) -> Any? = { block -> block() }
+
+  for (processor in processors.sortedBy { it.priority }) {
+    currentBlock = { block ->
+      processor.with(block)
+    }
+  }
+
+  return currentBlock
 }

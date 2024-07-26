@@ -141,6 +141,8 @@ The library provides interceptors for each combination of transaction type and p
 
 These interceptors are automatically applied when using the corresponding annotations.
 
+Certainly. I'll add information about processor priorities to the README.md file. Here's an updated version of the "Processor System" section with the added information:
+
 ## Processor System
 
 The library includes an extensible processor system that allows for custom handling of transactions:
@@ -150,6 +152,35 @@ The library includes an extensible processor system that allows for custom handl
 - `NewWriteTransactionalRWProcessor`: For new write transactions
 
 To implement a custom processor, create a class that implements the appropriate interface and it will be automatically picked up by the `TransactionalRWProcessorManager`.
+
+### Processor Priorities
+
+Each processor can define a priority, which determines the order in which processors are executed. Priorities are defined using the `priority` property in the `TransactionalRWProcessor` interface:
+
+```kotlin
+interface TransactionalRWProcessor {
+  val priority: Long
+    get() = Long.MIN_VALUE
+
+  fun <T> with(block: () -> T): T
+}
+```
+
+By default, the priority is set to `Long.MIN_VALUE`. Processors with higher priority values are executed first. You can override this value in your custom processor implementations to control their execution order.
+
+For example:
+
+```kotlin
+class MyCustomProcessor : NewReadTransactionalRWProcessor {
+  override val priority: Long = 100 // Higher priority
+
+  override fun <T> with(block: () -> T): T {
+    // Custom processing logic
+  }
+}
+```
+
+The `TransactionalRWProcessorManager` sorts processors based on their priorities before executing them. This allows for fine-grained control over the order of transaction processing steps.
 
 ## Exception Handling
 
