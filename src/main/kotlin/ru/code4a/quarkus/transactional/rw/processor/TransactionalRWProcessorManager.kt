@@ -1,31 +1,21 @@
 package ru.code4a.quarkus.transactional.rw.processor
 
-import io.quarkus.arc.All
 import io.quarkus.arc.Arc
-import io.quarkus.arc.Unremovable
-import jakarta.annotation.PostConstruct
-import jakarta.enterprise.context.ApplicationScoped
 
 /**
  * Manages the execution of transactional processors for different transaction types.
  */
-@ApplicationScoped
-@Unremovable
 class TransactionalRWProcessorManager(
-  @All
-  private val existsWriteTransactionalRWProcessors: MutableList<ExistsWriteTransactionalRWProcessor>,
-  @All
-  private val newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
-  @All
-  private val newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
+  existsWriteTransactionalRWProcessors: MutableList<ExistsWriteTransactionalRWProcessor>,
+  newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
+  newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
 ) {
 
-  private lateinit var existsWriteTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
-  private lateinit var newReadTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
-  private lateinit var newWriteTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
+  private val existsWriteTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
+  private val newReadTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
+  private val newWriteTransactionalRWProcessorsCallback: (() -> Any?) -> Any?
 
-  @PostConstruct
-  protected fun onPostConstruct() {
+  init {
     newReadTransactionalRWProcessorsCallback =
       createCallbackFromProcessors(newReadTransactionalRWProcessors)
 
