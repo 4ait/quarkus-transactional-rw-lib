@@ -10,13 +10,13 @@ class TransactionalRWProcessorManager(
   newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
   newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
 ) {
-  private val existsWriteTransactionalRWProcessorsCallback: (
+  val existsWriteTransactionalRWProcessorsCallback: (
     () -> Any?
   ) -> Any? = createCallbackFromProcessors(existsWriteTransactionalRWProcessors)
-  private val newReadTransactionalRWProcessorsCallback: (
+  val newReadTransactionalRWProcessorsCallback: (
     () -> Any?
   ) -> Any? = createCallbackFromProcessors(newReadTransactionalRWProcessors)
-  private val newWriteTransactionalRWProcessorsCallback: (
+  val newWriteTransactionalRWProcessorsCallback: (
     () -> Any?
   ) -> Any? = createCallbackFromProcessors(newWriteTransactionalRWProcessors)
 
@@ -28,11 +28,12 @@ class TransactionalRWProcessorManager(
           .instance(TransactionalRWProcessorManager::class.java)
           .get()
 
-    fun <T> withNewReadTransactionProcessors(block: () -> T): T = instance.newReadTransactionalRWProcessorsCallback(block) as T
+    internal fun <T> withNewReadTransactionProcessors(block: () -> T): T = instance.newReadTransactionalRWProcessorsCallback(block) as T
 
-    fun <T> withNewWriteTransactionProcessors(block: () -> T): T = instance.newWriteTransactionalRWProcessorsCallback(block) as T
+    internal fun <T> withNewWriteTransactionProcessors(block: () -> T): T = instance.newWriteTransactionalRWProcessorsCallback(block) as T
 
-    fun <T> withExistsWriteTransactionProcessors(block: () -> T): T = instance.existsWriteTransactionalRWProcessorsCallback(block) as T
+    internal fun <T> withExistsWriteTransactionProcessors(block: () -> T): T =
+      instance.existsWriteTransactionalRWProcessorsCallback(block) as T
   }
 }
 
