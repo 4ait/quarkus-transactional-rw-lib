@@ -41,9 +41,11 @@ internal fun createCallbackFromProcessors(processors: List<TransactionalRWProces
   var currentBlock: (() -> Any?) -> Any? = { block -> block() }
 
   for (processor in processors.sortedBy { it.priority }) {
+    val iterBlock = currentBlock
+
     currentBlock = { block ->
       processor.with {
-        currentBlock(block)
+        iterBlock(block)
       }
     }
   }
