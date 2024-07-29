@@ -42,7 +42,9 @@ internal fun createCallbackFromProcessors(processors: List<TransactionalRWProces
 
   for (processor in processors.sortedBy { it.priority }) {
     currentBlock = { block ->
-      processor.with(block)
+      processor.with {
+        currentBlock(block)
+      }
     }
   }
 
