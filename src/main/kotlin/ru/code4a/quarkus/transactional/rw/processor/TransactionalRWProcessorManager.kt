@@ -28,12 +28,11 @@ class TransactionalRWProcessorManager(
           .instance(TransactionalRWProcessorManager::class.java)
           .get()
 
-    internal fun <T> withNewReadTransactionProcessors(block: () -> T): T = instance.newReadTransactionalRWProcessorsCallback(block) as T
+    fun <T> withNewReadTransactionProcessors(block: () -> T): T = instance.newReadTransactionalRWProcessorsCallback(block) as T
 
-    internal fun <T> withNewWriteTransactionProcessors(block: () -> T): T = instance.newWriteTransactionalRWProcessorsCallback(block) as T
+    fun <T> withNewWriteTransactionProcessors(block: () -> T): T = instance.newWriteTransactionalRWProcessorsCallback(block) as T
 
-    internal fun <T> withExistsWriteTransactionProcessors(block: () -> T): T =
-      instance.existsWriteTransactionalRWProcessorsCallback(block) as T
+    fun <T> withExistsWriteTransactionProcessors(block: () -> T): T = instance.existsWriteTransactionalRWProcessorsCallback(block) as T
   }
 }
 
