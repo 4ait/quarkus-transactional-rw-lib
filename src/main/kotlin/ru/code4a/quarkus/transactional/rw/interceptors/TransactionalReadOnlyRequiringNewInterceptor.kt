@@ -12,9 +12,8 @@ import ru.code4a.quarkus.transactional.rw.annotations.TransactionalReadOnly
 @Interceptor
 class TransactionalReadOnlyRequiringNewInterceptor {
   @AroundInvoke
-  fun invocation(context: InvocationContext): Any? {
-    return TransactionReadOnly.withRequiringNew {
+  fun invocation(context: InvocationContext): Any? =
+    TransactionReadOnly.withRequiringNew {
       context.proceed()
     }
-  }
 }

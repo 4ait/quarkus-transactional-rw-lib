@@ -12,7 +12,9 @@ import java.lang.annotation.Inherited
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.CLASS)
 @Inherited
-annotation class TransactionalReadOnly(val type: Type = Type.JOIN_EXISTING) {
+annotation class TransactionalReadOnly(
+  val type: Type = Type.JOIN_EXISTING
+) {
   /**
    * Defines the type of transaction propagation.
    */

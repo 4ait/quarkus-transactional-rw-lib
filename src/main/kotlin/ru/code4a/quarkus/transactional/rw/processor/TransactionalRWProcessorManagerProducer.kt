@@ -4,30 +4,23 @@ import io.quarkus.arc.All
 import io.quarkus.arc.Unremovable
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces
-import jakarta.inject.Inject
 
-class TransactionalRWProcessorManagerProducer {
-
-  @Inject
+@ApplicationScoped
+class TransactionalRWProcessorManagerProducer(
   @All
-  lateinit var existsWriteTransactionalRWProcessors: MutableList<ExistsWriteTransactionalRWProcessor>
-
-  @Inject
+  val existsWriteTransactionalRWProcessors: MutableList<ExistsWriteTransactionalRWProcessor>,
   @All
-  lateinit var newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>
-
-  @Inject
+  val newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
   @All
-  lateinit var newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
-
+  val newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
+) {
   @Produces
   @ApplicationScoped
   @Unremovable
-  fun produceTransactionalRWProcessorManager(): TransactionalRWProcessorManager {
-    return TransactionalRWProcessorManager(
+  fun produceTransactionalRWProcessorManager(): TransactionalRWProcessorManager =
+    TransactionalRWProcessorManager(
       existsWriteTransactionalRWProcessors,
       newReadTransactionalRWProcessors,
       newWriteTransactionalRWProcessors
     )
-  }
 }

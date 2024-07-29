@@ -26,8 +26,7 @@ object TransactionReadOnly {
           .exceptionHandler {
             // We don't need to handle Exceptions for READ_ONLY transactions
             TransactionExceptionResult.COMMIT
-          }
-          .call {
+          }.call {
             TransactionalRWProcessorManager.withNewReadTransactionProcessors(block)
           }
       }
@@ -42,8 +41,8 @@ object TransactionReadOnly {
    * @param block the block of code to be executed within the new transaction
    * @return the result of the block of code
    */
-  fun <T> withRequiringNew(block: () -> T): T {
-    return CurrentTransactionLevel
+  fun <T> withRequiringNew(block: () -> T): T =
+    CurrentTransactionLevel
       .with(
         CurrentTransactionLevel.Level.READ_ONLY
       ) {
@@ -52,10 +51,8 @@ object TransactionReadOnly {
           .exceptionHandler {
             // We don't need to handle Exceptions for READ_ONLY transactions
             TransactionExceptionResult.COMMIT
-          }
-          .call {
+          }.call {
             TransactionalRWProcessorManager.withNewReadTransactionProcessors(block)
           }
       }
-  }
 }

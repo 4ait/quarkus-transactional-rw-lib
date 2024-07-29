@@ -12,9 +12,8 @@ import ru.code4a.quarkus.transactional.rw.annotations.TransactionalReadOnly
 @Interceptor
 class TransactionalReadOnlyJoinExistingInterceptor {
   @AroundInvoke
-  fun invocation(context: InvocationContext): Any? {
-    return TransactionReadOnly.withJoiningExisting {
+  fun invocation(context: InvocationContext): Any? =
+    TransactionReadOnly.withJoiningExisting {
       context.proceed()
     }
-  }
 }

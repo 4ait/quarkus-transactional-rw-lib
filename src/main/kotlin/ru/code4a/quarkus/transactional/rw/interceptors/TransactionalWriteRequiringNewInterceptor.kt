@@ -12,9 +12,8 @@ import ru.code4a.quarkus.transactional.rw.annotations.TransactionalWrite
 @Interceptor
 class TransactionalWriteRequiringNewInterceptor {
   @AroundInvoke
-  fun invocation(context: InvocationContext): Any? {
-    return TransactionWrite.withRequiringNew {
+  fun invocation(context: InvocationContext): Any? =
+    TransactionWrite.withRequiringNew {
       context.proceed()
     }
-  }
 }

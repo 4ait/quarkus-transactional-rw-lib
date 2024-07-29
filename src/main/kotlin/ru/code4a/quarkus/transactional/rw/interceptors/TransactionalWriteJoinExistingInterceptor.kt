@@ -12,9 +12,8 @@ import ru.code4a.quarkus.transactional.rw.annotations.TransactionalWrite
 @Interceptor
 class TransactionalWriteJoinExistingInterceptor {
   @AroundInvoke
-  fun invocation(context: InvocationContext): Any? {
-    return TransactionWrite.withJoiningExisting {
+  fun invocation(context: InvocationContext): Any? =
+    TransactionWrite.withJoiningExisting {
       context.proceed()
     }
-  }
 }

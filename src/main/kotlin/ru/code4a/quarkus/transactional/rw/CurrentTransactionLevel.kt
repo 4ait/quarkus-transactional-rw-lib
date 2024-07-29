@@ -38,7 +38,5 @@ internal object CurrentTransactionLevel {
    *
    * @return the current transaction level, or null if no transaction level is set
    */
-  fun get(): Level? {
-    return topLevel.get()
-  }
+  fun get(): Level? = topLevel.get()
 }
