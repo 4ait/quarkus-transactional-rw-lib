@@ -20,7 +20,7 @@ object TransactionReadOnly {
     val currentTransactionLevel = CurrentTransactionLevel.get()
 
     return if (currentTransactionLevel == null) {
-      CurrentTransactionLevel.with(CurrentTransactionLevel.Level.READ_ONLY) {
+      CurrentTransactionLevel.with(TransactionLevel.READ_ONLY) {
         QuarkusTransaction
           .joiningExisting()
           .exceptionHandler {
@@ -44,7 +44,7 @@ object TransactionReadOnly {
   fun <T> withRequiringNew(block: () -> T): T =
     CurrentTransactionLevel
       .with(
-        CurrentTransactionLevel.Level.READ_ONLY
+        TransactionLevel.READ_ONLY
       ) {
         QuarkusTransaction
           .requiringNew()

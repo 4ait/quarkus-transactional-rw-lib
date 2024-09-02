@@ -18,12 +18,12 @@ object TransactionWrite {
   fun <T> withJoiningExisting(block: () -> T): T {
     val currentTransactionLevel = CurrentTransactionLevel.get()
 
-    if (currentTransactionLevel == CurrentTransactionLevel.Level.READ_ONLY) {
+    if (currentTransactionLevel == TransactionLevel.READ_ONLY) {
       throw IllegalStateException("Write transaction level cannot be inside read transaction level")
     }
 
     return if (currentTransactionLevel == null) {
-      CurrentTransactionLevel.with(CurrentTransactionLevel.Level.WRITE) {
+      CurrentTransactionLevel.with(TransactionLevel.WRITE) {
         QuarkusTransaction
           .joiningExisting()
           .exceptionHandler {
@@ -52,7 +52,7 @@ object TransactionWrite {
    */
   fun <T> withRequiringNew(block: () -> T): T =
     CurrentTransactionLevel.with(
-      CurrentTransactionLevel.Level.WRITE
+      TransactionLevel.WRITE
     ) {
       QuarkusTransaction
         .requiringNew()
