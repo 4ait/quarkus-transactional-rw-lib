@@ -24,13 +24,15 @@ object TransactionWrite {
 
     return if (currentTransactionLevel == null) {
       CurrentTransactionLevel.with(TransactionLevel.WRITE) {
-        QuarkusTransaction
-          .joiningExisting()
-          .exceptionHandler {
-            TransactionExceptionResult.ROLLBACK
-          }.call {
-            TransactionalRWProcessorManager.withExistsWriteTransactionProcessors(block)
-          }
+        TransactionalRWProcessorManager.withBeforeNewWriteTransactionProcessors {
+          QuarkusTransaction
+            .joiningExisting()
+            .exceptionHandler {
+              TransactionExceptionResult.ROLLBACK
+            }.call {
+              TransactionalRWProcessorManager.withNewWriteTransactionProcessors(block)
+            }
+        }
       }
     } else {
       QuarkusTransaction
@@ -38,7 +40,7 @@ object TransactionWrite {
         .exceptionHandler {
           TransactionExceptionResult.ROLLBACK
         }.call {
-          TransactionalRWProcessorManager.withNewWriteTransactionProcessors(block)
+          TransactionalRWProcessorManager.withExistsWriteTransactionProcessors(block)
         }
     }
   }
@@ -54,12 +56,14 @@ object TransactionWrite {
     CurrentTransactionLevel.with(
       TransactionLevel.WRITE
     ) {
-      QuarkusTransaction
-        .requiringNew()
-        .exceptionHandler {
-          TransactionExceptionResult.ROLLBACK
-        }.call {
-          TransactionalRWProcessorManager.withNewWriteTransactionProcessors(block)
-        }
+      TransactionalRWProcessorManager.withBeforeNewWriteTransactionProcessors {
+        QuarkusTransaction
+          .requiringNew()
+          .exceptionHandler {
+            TransactionExceptionResult.ROLLBACK
+          }.call {
+            TransactionalRWProcessorManager.withNewWriteTransactionProcessors(block)
+          }
+      }
     }
 }

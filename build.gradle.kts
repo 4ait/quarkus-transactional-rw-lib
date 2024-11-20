@@ -4,7 +4,7 @@ group = "ru.code4a"
 version = file("version").readText().trim()
 
 plugins {
-  kotlin("jvm") version "2.0.0"
+  kotlin("jvm") version "2.0.21"
 
   id("org.kordamp.gradle.jandex") version "1.0.0"
 

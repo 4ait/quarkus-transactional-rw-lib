@@ -12,7 +12,9 @@ class TransactionalRWProcessorManagerProducer(
   @All
   val newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
   @All
-  val newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
+  val newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>,
+  @All
+  val beforeNewWriteTransactionalRWProcessors: MutableList<BeforeNewWriteTransactionalRWProcessor>
 ) {
   @Produces
   @ApplicationScoped
@@ -21,6 +23,7 @@ class TransactionalRWProcessorManagerProducer(
     TransactionalRWProcessorManager(
       existsWriteTransactionalRWProcessors,
       newReadTransactionalRWProcessors,
-      newWriteTransactionalRWProcessors
+      newWriteTransactionalRWProcessors,
+      beforeNewWriteTransactionalRWProcessors
     )
 }

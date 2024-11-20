@@ -1,0 +1,3 @@
+package ru.code4a.quarkus.transactional.rw.processor
+
+interface BeforeNewWriteTransactionalRWProcessor : TransactionalRWProcessor

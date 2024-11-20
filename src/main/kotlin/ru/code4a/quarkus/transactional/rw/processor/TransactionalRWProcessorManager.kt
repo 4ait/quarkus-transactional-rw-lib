@@ -6,9 +6,10 @@ import io.quarkus.arc.Arc
  * Manages the execution of transactional processors for different transaction types.
  */
 class TransactionalRWProcessorManager(
-  existsWriteTransactionalRWProcessors: MutableList<ExistsWriteTransactionalRWProcessor>,
-  newReadTransactionalRWProcessors: MutableList<NewReadTransactionalRWProcessor>,
-  newWriteTransactionalRWProcessors: MutableList<NewWriteTransactionalRWProcessor>
+  existsWriteTransactionalRWProcessors: List<ExistsWriteTransactionalRWProcessor>,
+  newReadTransactionalRWProcessors: List<NewReadTransactionalRWProcessor>,
+  newWriteTransactionalRWProcessors: List<NewWriteTransactionalRWProcessor>,
+  beforeNewWriteTransactionalRWProcessors: List<BeforeNewWriteTransactionalRWProcessor>
 ) {
   val existsWriteTransactionalRWProcessorsCallback: (
     () -> Any?
@@ -19,6 +20,9 @@ class TransactionalRWProcessorManager(
   val newWriteTransactionalRWProcessorsCallback: (
     () -> Any?
   ) -> Any? = createCallbackFromProcessors(newWriteTransactionalRWProcessors)
+  val beforeNewWriteTransactionalRWProcessorsCallback: (
+      () -> Any?
+  ) -> Any? = createCallbackFromProcessors(beforeNewWriteTransactionalRWProcessors)
 
   companion object {
     private val instance
@@ -31,6 +35,8 @@ class TransactionalRWProcessorManager(
     internal fun <T> withNewReadTransactionProcessors(block: () -> T): T = instance.newReadTransactionalRWProcessorsCallback(block) as T
 
     internal fun <T> withNewWriteTransactionProcessors(block: () -> T): T = instance.newWriteTransactionalRWProcessorsCallback(block) as T
+
+    internal fun <T> withBeforeNewWriteTransactionProcessors(block: () -> T): T = instance.beforeNewWriteTransactionalRWProcessorsCallback(block) as T
 
     internal fun <T> withExistsWriteTransactionProcessors(block: () -> T): T =
       instance.existsWriteTransactionalRWProcessorsCallback(block) as T
