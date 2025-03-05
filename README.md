@@ -141,8 +141,6 @@ The library provides interceptors for each combination of transaction type and p
 
 These interceptors are automatically applied when using the corresponding annotations.
 
-Certainly. I'll add information about processor priorities to the README.md file. Here's an updated version of the "Processor System" section with the added information:
-
 ## Processor System
 
 The library includes an extensible processor system that allows for custom handling of transactions:
