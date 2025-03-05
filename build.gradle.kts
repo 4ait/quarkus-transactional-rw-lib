@@ -85,8 +85,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  implementation("io.quarkus:quarkus-arc:3.17.3")
-  implementation("io.quarkus:quarkus-narayana-jta:3.17.3")
+  implementation("io.quarkus:quarkus-arc:3.19.1")
+  implementation("io.quarkus:quarkus-narayana-jta:3.19.1")
 }
 
 tasks.named("compileTestKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {

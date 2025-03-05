@@ -4,7 +4,7 @@ package ru.code4a.quarkus.transactional.rw
  * Manages the current transaction level for the executing thread.
  */
 object CurrentTransactionLevel {
-  private val topLevel = ThreadLocal<TransactionLevel>()
+  private val topLevel = ScopedValue.newInstance<TransactionLevel>()
 
   /**
    * Changes the current transaction level and executes a given block of code.
@@ -17,15 +17,11 @@ object CurrentTransactionLevel {
     newLevel: TransactionLevel,
     block: () -> T
   ): T {
-    val prevTopLevel: TransactionLevel? = topLevel.get()
-
-    topLevel.set(newLevel)
-
-    try {
-      return block()
-    } finally {
-      topLevel.set(prevTopLevel)
-    }
+    return ScopedValue
+      .where(topLevel, newLevel)
+      .call {
+        block()
+      }
   }
 
   /**
@@ -33,5 +29,5 @@ object CurrentTransactionLevel {
    *
    * @return the current transaction level, or null if no transaction level is set
    */
-  fun get(): TransactionLevel? = topLevel.get()
+  fun get(): TransactionLevel? = if (topLevel.isBound) topLevel.get() else null
 }
